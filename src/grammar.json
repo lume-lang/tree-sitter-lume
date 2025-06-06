@@ -243,7 +243,7 @@
                     "type": "REPEAT1",
                     "content": {
                       "type": "SYMBOL",
-                      "name": "_property"
+                      "name": "property"
                     }
                   },
                   {
@@ -260,7 +260,7 @@
         }
       ]
     },
-    "_property": {
+    "property": {
       "type": "SEQ",
       "members": [
         {

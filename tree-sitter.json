@@ -4,13 +4,13 @@
     {
       "name": "lume",
       "camelcase": "Lume",
-      "title": "Lume",
-      "scope": "source.lume",
+      "scope": "source.lm",
+      "path": ".",
       "file-types": [
         "lm"
       ],
-      "injection-regex": "^lume$",
-      "class-name": "TreeSitterLume"
+      "injection-regex": "^lm$",
+      "highlights": "queries/highlights.scm"
     }
   ],
   "metadata": {
