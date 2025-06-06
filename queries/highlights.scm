@@ -11,10 +11,13 @@
 (doc_comment) @comment.doc
 
 ;; Variables
-(variable_reference) @variable
+(variable_declaration name:(identifier) @variable)
+(variable_reference (identifier) @variable)
 
 ;; Types
 (type) @type
+
+(type_params name: (identifier) @type)
 
 (struct_definition name:(identifier) @type)
 (enum_definition name:(identifier) @type)
@@ -25,10 +28,13 @@
 (enum_case_properties) @property
 (property) @property
 
-[
-  (method_definition)
-  (function_definition)
-] @function
+;; Functions
+(method_definition) @function
+(function_definition) @function
+
+(call_expression callee:(_) @function)
+
+(parameter name:(identifier) @variable.parameter)
 
 ;; Tokens
 [
@@ -72,8 +78,8 @@
 ]  @punctuation.bracket
 
 ;; Keywords
-(self_reference) @keyword
-(self) @keyword
+(self_reference) @variable.builtin
+(self) @variable.builtin
 
 [
   "as"
