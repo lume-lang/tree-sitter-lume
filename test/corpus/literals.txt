@@ -1,0 +1,155 @@
+==========
+Integer literals
+==========
+
+fn _() {
+    0;
+    1234;
+    1234;
+    1__23__4;
+    0_u64;
+    1_i32;
+    -10;
+    0xDEAD_BEEF;
+    0b1000101010101010_u16;
+    0o70_i16;
+}
+
+----------
+
+(source_file
+  (function_definition
+    (identifier)
+    (parameters)
+    (statement
+      (integer_literal))
+    (statement
+      (integer_literal))
+    (statement
+      (integer_literal))
+    (statement
+      (integer_literal))
+    (statement
+      (integer_literal))
+    (statement
+      (integer_literal))
+    (statement
+      (integer_literal))
+    (statement
+      (integer_literal))
+    (statement
+      (integer_literal))
+    (statement
+      (integer_literal))))
+
+==========
+Boolean literals
+==========
+
+fn _() {
+    false;
+    true;
+}
+
+----------
+
+(source_file
+  (function_definition
+    (identifier)
+    (parameters)
+    (statement
+      (boolean_literal))
+    (statement
+      (boolean_literal))))
+
+==========
+Floating-point literals
+==========
+
+fn _() {
+    123.123;
+    2.1;
+    123.0_f32;
+    123_f32;
+    1.12E3_f64;
+    1E1_f32;
+    -123.123;
+    -1E4;
+}
+
+----------
+
+(source_file
+  (function_definition
+    (identifier)
+    (parameters)
+    (statement
+      (float_literal))
+    (statement
+      (float_literal))
+    (statement
+      (float_literal))
+    (statement
+      (float_literal))
+    (statement
+      (float_literal))
+    (statement
+      (float_literal))
+    (statement
+      (float_literal))
+    (statement
+      (float_literal))))
+
+==========
+String literals
+==========
+
+fn _() {
+    "";
+    "abc";
+    "newline
+";
+    "testing with numbers";
+}
+
+----------
+
+(source_file
+  (function_definition
+    (identifier)
+    (parameters)
+    (statement
+      (string_literal))
+    (statement
+      (string_literal))
+    (statement
+      (string_literal))
+    (statement
+      (string_literal))))
+
+==========
+Array literals
+==========
+
+fn _() {
+    [];
+    [1_u32];
+    [[test]];
+}
+
+----------
+
+(source_file
+  (function_definition
+    (identifier)
+    (parameters)
+    (statement
+      (array_literal))
+    (statement
+      (array_literal
+        (integer_literal)))
+    (statement
+      (array_literal
+        (array_literal
+          (variable_reference
+            (identifier)))))))

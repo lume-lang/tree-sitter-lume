@@ -1,0 +1,460 @@
+==========
+Namespaces
+==========
+
+namespace std
+
+namespace std::io
+
+namespace std::io::buffers
+
+----------
+
+(source_file
+  (namespace
+    (path
+      (identifier)))
+  (namespace
+    (path
+      (scoped_identifier
+        (type
+          (path
+            (identifier)))
+          (identifier))))
+  (namespace
+    (path
+      (scoped_identifier
+        (type
+          (path
+            (scoped_identifier
+              (type
+                (path
+                  (identifier)))
+              (identifier))))
+            (identifier)))))
+
+==========
+Imports
+==========
+
+import std (io)
+
+import std (io, term)
+
+import std::io (println)
+
+import std::io (print, println)
+
+----------
+
+(source_file
+  (import
+    root: (path
+      (identifier))
+    items: (identifier))
+  (import
+    root: (path
+      (identifier))
+    items: (identifier)
+    items: (identifier))
+  (import
+    root: (path
+      (scoped_identifier
+        root: (type
+          name: (path
+            (identifier)))
+        name: (identifier)))
+    items: (identifier))
+  (import
+    root: (path
+      (scoped_identifier
+        root: (type
+          name: (path
+            (identifier)))
+        name: (identifier)))
+    items: (identifier)
+    items: (identifier)))
+
+==========
+Function declarations
+==========
+
+fn main() {}
+
+fn foo() -> Bar {}
+
+fn add(x: Int32, y: Int32) -> Int32 {
+    return x + y;
+}
+
+fn add<T>(x: T, y: T) -> T {
+    return x + y;
+}
+
+----------
+
+(source_file
+  (function_definition
+    name: (identifier)
+    parameters: (parameters))
+  (function_definition
+    name: (identifier)
+    parameters: (parameters)
+    return_type: (type
+      name: (path
+        (identifier))))
+  (function_definition
+    name: (identifier)
+    parameters: (parameters
+      (parameter
+        name: (identifier)
+        type: (type
+          name: (path
+            (identifier))))
+      (parameter
+        name: (identifier)
+        type: (type
+          name: (path
+            (identifier)))))
+    return_type: (type
+      name: (path
+        (identifier)))
+    block: (statement
+      (return_statement
+        (arithmetic_expression
+          left: (variable_reference
+            (identifier))
+          right: (variable_reference
+            (identifier)))))
+    block: (statement
+      (return_statement)))
+  (function_definition
+    name: (identifier)
+    type_parameters: (type_params
+      name: (identifier))
+    parameters: (parameters
+      (parameter
+        name: (identifier)
+        type: (type
+          name: (path
+            (identifier))))
+      (parameter
+        name: (identifier)
+        type: (type
+          name: (path
+            (identifier)))))
+    return_type: (type
+      name: (path
+        (identifier)))
+    block: (statement
+      (return_statement
+        (arithmetic_expression
+          left: (variable_reference
+            (identifier))
+          right: (variable_reference
+            (identifier)))))
+    block: (statement
+      (return_statement))))
+
+==========
+External functions
+==========
+
+fn external main() {}
+
+fn external main<T>() {}
+
+fn external main() -> Int32 {}
+
+----------
+
+(source_file
+  (function_definition
+    name: (identifier)
+    parameters: (parameters))
+  (function_definition
+    name: (identifier)
+    type_parameters: (type_params
+      name: (identifier))
+    parameters: (parameters))
+  (function_definition
+    name: (identifier)
+    parameters: (parameters)
+    return_type: (type
+      name: (path
+        (identifier)))))
+
+==========
+Struct definitions
+==========
+
+struct Foo {}
+
+struct Foo<T> {}
+
+struct builtin Foo {}
+
+struct Foo {
+    bar: Int32;
+}
+
+struct Foo {
+    pub bar: Int32;
+}
+
+struct Foo {
+    bar: Int32 = 1;
+}
+
+----------
+
+(source_file
+  (struct_definition
+    (identifier))
+  (struct_definition
+    (identifier)
+    (type_params
+      (identifier)))
+  (struct_definition
+    (identifier))
+  (struct_definition
+    (identifier)
+    (identifier)
+    (type
+      (path
+        (identifier))))
+  (struct_definition
+    (identifier)
+    (identifier)
+    (type
+      (path
+        (identifier))))
+  (struct_definition
+    (identifier)
+    (identifier)
+    (type
+      (path
+        (identifier)))
+    (integer_literal)))
+
+==========
+Implementations
+==========
+
+impl Empty {}
+
+impl Function {
+    fn empty() {}
+}
+
+impl Generic<Int32> {}
+
+impl<T> Generic<T> {}
+
+----------
+
+(source_file
+  (impl
+    (type
+      (path
+        (identifier)))
+    (method_list))
+  (impl
+    (type
+      (path
+        (identifier)))
+    (method_list
+      (method_definition
+        (identifier)
+        (parameters))))
+  (impl
+    (type
+      (path
+        (identifier))
+      (type_args
+        (type
+          (path
+            (identifier)))))
+    (method_list))
+  (impl
+    (type_params
+      (identifier))
+        (type
+          (path
+            (identifier))
+          (type_args
+            (type
+              (path
+                (identifier)))))
+    (method_list)))
+
+==========
+Trait definitions
+==========
+
+trait Empty {}
+
+trait Function {
+    fn empty()
+}
+
+trait Function {
+    fn empty() {}
+}
+
+trait Generic<T> {}
+
+----------
+(source_file
+  (trait
+    (identifier)
+    (method_list))
+  (trait
+    (identifier)
+    (method_list
+      (method_definition
+        (identifier)
+        (parameters))))
+  (trait
+    (identifier)
+    (method_list
+      (method_definition
+        (identifier)
+        (parameters))))
+  (trait
+    (identifier)
+    (type_params
+      (identifier))
+    (method_list)))
+
+==========
+Trait implementations
+==========
+
+use Add in Int32 {}
+
+use Add in Int32 {
+    pub fn add() -> Int32 { }
+}
+
+use Add in Int32 {
+    fn add() { }
+}
+
+use Generic<T> in Int32 {}
+
+----------
+
+(source_file
+  (trait_impl
+    name: (type
+      name: (path
+        (identifier)))
+    target: (type
+      name: (path
+        (identifier)))
+    block: (method_list))
+  (trait_impl
+    name: (type
+      name: (path
+        (identifier)))
+    target: (type
+      name: (path
+        (identifier)))
+    block: (method_list
+      (method_definition
+        name: (identifier)
+        parameters: (parameters)
+        return_type: (type
+          name: (path
+            (identifier))))))
+  (trait_impl
+    name: (type
+      name: (path
+        (identifier)))
+    target: (type
+      name: (path
+        (identifier)))
+    block: (method_list
+      (method_definition
+        name: (identifier)
+        parameters: (parameters))))
+  (trait_impl
+    name: (type
+      name: (path
+        (identifier))
+      type_arguments: (type_args
+        (type
+          name: (path
+            (identifier)))))
+    target: (type
+      name: (path
+        (identifier)))
+    block: (method_list)))
+
+==========
+Enum definitions
+==========
+
+enum Foo {}
+
+enum IpKind {
+    IPv4,
+    IPv6
+}
+
+enum Token {
+    str(String),
+    int(Int32),
+}
+
+enum Token {
+    str(String, Location),
+    int(Int32, Location),
+}
+
+----------
+
+(source_file
+  (enum_definition
+    name: (identifier))
+  (enum_definition
+    name: (identifier)
+    case: (enum_case_definition
+      name: (identifier))
+    case: (enum_case_definition
+      name: (identifier)))
+  (enum_definition
+    name: (identifier)
+    case: (enum_case_definition
+      name: (identifier)
+      (enum_case_properties
+        properties: (type
+          name: (path
+            (identifier)))))
+    case: (enum_case_definition
+      name: (identifier)
+      (enum_case_properties
+        properties: (type
+          name: (path
+            (identifier))))))
+   (enum_definition
+     name: (identifier)
+     case: (enum_case_definition
+       name: (identifier)
+       (enum_case_properties
+         properties: (type
+           name: (path
+             (identifier)))
+         properties: (type
+           name: (path
+             (identifier)))))
+     case: (enum_case_definition
+       name: (identifier)
+       (enum_case_properties
+         properties: (type
+           name: (path
+             (identifier)))
+         properties: (type
+           name: (path
+             (identifier)))))))

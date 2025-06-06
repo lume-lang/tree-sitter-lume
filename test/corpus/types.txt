@@ -1,0 +1,97 @@
+==========
+Types
+==========
+
+type A = Foo
+
+type B = Foo::Bar
+
+type C = Foo::Bar::Baz
+
+type D = Foo<T>
+
+type E = Foo<T>::Bar::Baz
+
+type F = Foo<T1>::Bar<T2>::Baz<T3>
+
+----------
+
+(source_file
+  (type_alias
+    (identifier)
+    (type
+      (path
+        (identifier))))
+  (type_alias
+    (identifier)
+    (type
+      (path
+        (scoped_identifier
+          (type
+            (path
+              (identifier)))
+          (identifier)))))
+  (type_alias
+    (identifier)
+    (type
+      (path
+        (scoped_identifier
+          (type
+            (path
+              (scoped_identifier
+                (type
+                  (path
+                    (identifier)))
+                (identifier))))
+          (identifier)))))
+  (type_alias
+    (identifier)
+    (type
+      (path
+        (identifier))
+      (type_args
+        (type
+          (path
+            (identifier))))))
+  (type_alias
+    (identifier)
+    (type
+      (path
+        (scoped_identifier
+          (type
+            (path
+              (scoped_identifier
+                (type
+                  (path
+                    (identifier))
+                  (type_args
+                    (type
+                      (path
+                        (identifier)))))
+                (identifier))))
+          (identifier)))))
+  (type_alias
+    (identifier)
+    (type
+      (path
+        (scoped_identifier
+          (type
+            (path
+              (scoped_identifier
+                (type
+                  (path
+                    (identifier))
+                  (type_args
+                    (type
+                      (path
+                        (identifier)))))
+                (identifier)))
+            (type_args
+              (type
+                (path
+                  (identifier)))))
+          (identifier)))
+      (type_args
+        (type
+          (path
+            (identifier)))))))

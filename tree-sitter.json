@@ -1,0 +1,40 @@
+{
+  "$schema": "https://tree-sitter.github.io/tree-sitter/assets/schemas/config.schema.json",
+  "grammars": [
+    {
+      "name": "lume",
+      "camelcase": "Lume",
+      "title": "Lume",
+      "scope": "source.lume",
+      "file-types": [
+        "lm"
+      ],
+      "injection-regex": "^lume$",
+      "class-name": "TreeSitterLume"
+    }
+  ],
+  "metadata": {
+    "version": "0.1.0",
+    "license": "MIT",
+    "description": "Syntax highlighting for Lume",
+    "authors": [
+      {
+        "name": "Max T. Kristiansen",
+        "email": "me@maxtrier.dk",
+        "url": "https://maxtrier.dk/"
+      }
+    ],
+    "links": {
+      "repository": "https://github.com/lume-lang/tree-sitter-lume"
+    }
+  },
+  "bindings": {
+    "c": true,
+    "go": true,
+    "node": true,
+    "python": true,
+    "rust": true,
+    "swift": true,
+    "zig": false
+  }
+}
