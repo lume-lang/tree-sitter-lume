@@ -350,6 +350,7 @@ module.exports = grammar({
       $.unary_expression,
       $.postfix_expression,
       $._literal,
+      prec(1, $.scoped_identifier),
     ),
 
     arithmetic_expression: $ => {
@@ -384,22 +385,8 @@ module.exports = grammar({
       field('right', $._expression),
     )),
 
-    call_expression: $ => choice(
-      $._instance_call_expression,
-      $._static_call_expression,
-    ),
-
-    _instance_call_expression: $ => prec(PREC.call, seq(
+    call_expression: $ => prec(PREC.call, seq(
       field('callee', $._expression),
-      optional(seq(
-        '::',
-        field('type_arguments', $.type_args),
-      )),
-      field('arguments', $._arguments),
-    )),
-
-    _static_call_expression: $ => prec(PREC.call, seq(
-      field('name', $.path),
       optional(seq(
         '::',
         field('type_arguments', $.type_args),

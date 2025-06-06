@@ -1802,6 +1802,14 @@
         {
           "type": "SYMBOL",
           "name": "_literal"
+        },
+        {
+          "type": "PREC",
+          "value": 1,
+          "content": {
+            "type": "SYMBOL",
+            "name": "scoped_identifier"
+          }
         }
       ]
     },
@@ -2037,19 +2045,6 @@
       }
     },
     "call_expression": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "_instance_call_expression"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "_static_call_expression"
-        }
-      ]
-    },
-    "_instance_call_expression": {
       "type": "PREC",
       "value": 11,
       "content": {
@@ -2061,56 +2056,6 @@
             "content": {
               "type": "SYMBOL",
               "name": "_expression"
-            }
-          },
-          {
-            "type": "CHOICE",
-            "members": [
-              {
-                "type": "SEQ",
-                "members": [
-                  {
-                    "type": "STRING",
-                    "value": "::"
-                  },
-                  {
-                    "type": "FIELD",
-                    "name": "type_arguments",
-                    "content": {
-                      "type": "SYMBOL",
-                      "name": "type_args"
-                    }
-                  }
-                ]
-              },
-              {
-                "type": "BLANK"
-              }
-            ]
-          },
-          {
-            "type": "FIELD",
-            "name": "arguments",
-            "content": {
-              "type": "SYMBOL",
-              "name": "_arguments"
-            }
-          }
-        ]
-      }
-    },
-    "_static_call_expression": {
-      "type": "PREC",
-      "value": 11,
-      "content": {
-        "type": "SEQ",
-        "members": [
-          {
-            "type": "FIELD",
-            "name": "name",
-            "content": {
-              "type": "SYMBOL",
-              "name": "path"
             }
           },
           {
