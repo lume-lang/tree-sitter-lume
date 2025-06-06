@@ -79,10 +79,10 @@ module.exports = grammar({
       optional('builtin'),
       field('name', $.identifier),
       optional(field('type_parameters', $.type_params)),
-      field('properties', in_block($._property))
+      field('properties', in_block($.property))
     ),
 
-    _property: $ => seq(
+    property: $ => seq(
       optional($.doc_comment),
       optional($._visibility),
       field('name', $.identifier),

@@ -219,23 +219,26 @@ struct Foo {
     (identifier))
   (struct_definition
     (identifier)
-    (identifier)
-    (type
-      (path
-        (identifier))))
+    (property
+      (identifier)
+      (type
+        (path
+          (identifier)))))
   (struct_definition
     (identifier)
-    (identifier)
-    (type
-      (path
-        (identifier))))
+    (property
+      (identifier)
+      (type
+        (path
+          (identifier)))))
   (struct_definition
     (identifier)
-    (identifier)
-    (type
-      (path
-        (identifier)))
-    (integer_literal)))
+    (property
+      (identifier)
+      (type
+        (path
+          (identifier)))
+    (integer_literal))))
 
 ==========
 Implementations
