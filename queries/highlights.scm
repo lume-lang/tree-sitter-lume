@@ -33,6 +33,7 @@
 (function_definition) @function
 
 (call_expression callee:(_) @function)
+(call_expression callee:(variable_reference (identifier) @function))
 
 (parameter name:(identifier) @variable.parameter)
 
