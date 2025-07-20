@@ -156,8 +156,17 @@
       ]
     },
     "_visibility": {
-      "type": "STRING",
-      "value": "pub"
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "pub"
+        },
+        {
+          "type": "STRING",
+          "value": "priv"
+        }
+      ]
     },
     "struct_definition": {
       "type": "SEQ",

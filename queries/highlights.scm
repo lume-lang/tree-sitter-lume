@@ -84,7 +84,6 @@
 [
   "as"
   "break"
-  "builtin"
   "continue"
   "else"
   "enum"
@@ -100,12 +99,12 @@
   "loop"
   "namespace"
   "pub"
+  "priv"
   "return"
   "struct"
   "trait"
   "true"
   "type"
-  "unless"
   "use"
   "while"
 ] @keyword

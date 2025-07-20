@@ -70,7 +70,7 @@ module.exports = grammar({
       field('path', $.path),
     ),
 
-    _visibility: _ => 'pub',
+    _visibility: _ => choice('pub', 'priv'),
 
     struct_definition: $ => seq(
       optional($.doc_comment),
