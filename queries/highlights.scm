@@ -10,12 +10,16 @@
 ;; Comments
 (doc_comment) @comment.doc
 
+;; Imports
+(import items:(identifier) @type)
+
 ;; Variables
 (variable_declaration name:(identifier) @variable)
 (variable_reference (identifier) @variable)
 
 ;; Types
-(type) @type
+((type name:(_) @type) (#match? @type "^[A-Z]"))
+((type name:(path (scoped_identifier name:(_) @type) (#match? @type "^[A-Z]"))))
 
 (type_params name: (identifier) @type)
 
@@ -26,7 +30,7 @@
 (enum_definition) @enum
 (enum_case_definition) @property
 (enum_case_properties) @property
-(property) @property
+(property name:(_) @property)
 
 ;; Expressions
 (construct_expression) @constructor
@@ -34,8 +38,8 @@
 (constructor_field name:(identifier) @variable)
 
 ;; Functions
-(method_definition name:(_) @label) @function
-(function_definition name:(_) @label) @function
+(method_definition name:(_) @function)
+(function_definition name:(_) @function)
 
 (call_expression callee:(_) @function)
 (call_expression callee:(variable_reference (identifier) @function))

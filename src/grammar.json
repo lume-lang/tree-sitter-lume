@@ -672,8 +672,29 @@
       ]
     },
     "method_definition": {
-      "type": "SYMBOL",
-      "name": "_function_signature"
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_function_signature"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "FIELD",
+              "name": "block",
+              "content": {
+                "type": "SYMBOL",
+                "name": "_block"
+              }
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        }
+      ]
     },
     "method_list": {
       "type": "SEQ",
@@ -704,8 +725,29 @@
       ]
     },
     "function_definition": {
-      "type": "SYMBOL",
-      "name": "_function_signature"
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_function_signature"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "FIELD",
+              "name": "block",
+              "content": {
+                "type": "SYMBOL",
+                "name": "_block"
+              }
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        }
+      ]
     },
     "impl": {
       "type": "SEQ",

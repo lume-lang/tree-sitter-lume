@@ -1111,6 +1111,24 @@
     "type": "function_definition",
     "named": true,
     "fields": {
+      "block": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "statement",
+            "named": true
+          },
+          {
+            "type": "{",
+            "named": false
+          },
+          {
+            "type": "}",
+            "named": false
+          }
+        ]
+      },
       "modifiers": {
         "multiple": false,
         "required": false,
@@ -1663,6 +1681,24 @@
     "type": "method_definition",
     "named": true,
     "fields": {
+      "block": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "statement",
+            "named": true
+          },
+          {
+            "type": "{",
+            "named": false
+          },
+          {
+            "type": "}",
+            "named": false
+          }
+        ]
+      },
       "modifiers": {
         "multiple": false,
         "required": false,

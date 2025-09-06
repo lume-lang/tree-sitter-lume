@@ -156,11 +156,17 @@ module.exports = grammar({
       '-='
     ),
 
-    method_definition: $ => $._function_signature,
+    method_definition: $ => seq(
+      $._function_signature,
+      optional(field('block', $._block))
+    ),
 
     method_list: $ => in_block($.method_definition),
 
-    function_definition: $ => $._function_signature,
+    function_definition: $ => seq(
+      $._function_signature,
+      optional(field('block', $._block))
+    ),
 
     impl: $ => seq(
       optional($.doc_comment),
