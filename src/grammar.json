@@ -1518,6 +1518,14 @@
           "name": "iterator_loop"
         },
         {
+          "type": "PREC",
+          "value": 10,
+          "content": {
+            "type": "SYMBOL",
+            "name": "if_conditional"
+          }
+        },
+        {
           "type": "SYMBOL",
           "name": "predicate_loop"
         },

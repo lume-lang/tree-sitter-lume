@@ -295,6 +295,7 @@ module.exports = grammar({
       $.continue_statement,
       $.infinite_loop,
       $.iterator_loop,
+      prec(1, $.if_conditional),
       $.predicate_loop,
       $.return_statement,
       $._expression_statement
