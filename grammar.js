@@ -305,13 +305,10 @@ module.exports = grammar({
      */
 
     _expression: $ => choice(
-      $.arithmetic_expression,
       $.assignment_expression,
-      $.boolean_expression,
+      $.binary_expression,
       $.call_expression,
       $.cast_expression,
-      $.comparison_expression,
-      $.equality_expression,
       $.member_expression,
       $.if_conditional,
       $._nested_expression,
@@ -324,35 +321,9 @@ module.exports = grammar({
       prec(1, $.scoped_identifier),
     ),
 
-    arithmetic_expression: $ => {
-      /** @type {[number, ChoiceRule][]} */
-      const table = [
-        [PREC.additive, choice('+', '-')],
-        [PREC.multiplicative, choice('*', '/')],
-      ];
-
-      return choice(...table.map(([precedence, operator]) => prec.left(precedence, seq(
-        field('left', $._expression),
-        field('operator', operator),
-        field('right', $._expression),
-      ))));
-    },
-
     assignment_expression: $ => prec.left(PREC.assign, seq(
       field('left', $._expression),
       field('operator', choice('=', '+=', '-=', '*=', '/=')),
-      field('right', $._expression),
-    )),
-
-    bitwise_expression: $ => prec.left(PREC.bitwise, seq(
-      field('left', $._expression),
-      field('operator', choice('&', '|', '^')),
-      field('right', $._expression),
-    )),
-
-    boolean_expression: $ => prec.left(PREC.boolean, seq(
-      field('left', $._expression),
-      field('operator', choice('&&', '||')),
       field('right', $._expression),
     )),
 
@@ -378,17 +349,23 @@ module.exports = grammar({
       field('type', $.type),
     )),
 
-    comparison_expression: $ => prec.left(PREC.comparison, seq(
-      field('left', $._expression),
-      field('operator', choice('<', '<=', '>', '>=')),
-      field('right', $._expression)
-    )),
+    binary_expression: $ => {
+      /** @type {[number, ChoiceRule][]} */
+      const table = [
+        [PREC.bitwise, choice('&', '|', '^')],
+        [PREC.boolean, choice('&&', '||')],
+        [PREC.equality, choice('==', '!=')],
+        [PREC.comparison, choice('<', '<=', '>', '>=')],
+        [PREC.additive, choice('+', '-')],
+        [PREC.multiplicative, choice('*', '/')],
+      ];
 
-    equality_expression: $ => prec.left(PREC.equality, seq(
-      field('left', $._expression),
-      field('operator', choice('==', '!=')),
-      field('right', $._expression)
-    )),
+      return choice(...table.map(([precedence, operator]) => prec.left(precedence, seq(
+        field('left', $._expression),
+        field('operator', operator),
+        field('right', $._expression)
+      ))));
+    },
 
     member_expression: $ => seq(
       field('value', $._expression),
