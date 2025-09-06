@@ -120,11 +120,40 @@ module.exports = grammar({
       optional($._visibility),
       'fn',
       optional(field('modifiers', $._func_modifiers)),
-      field('name', $.identifier),
+      field('name', $.function_name),
       optional(field('type_parameters', $.type_params)),
       field('parameters', $.parameters),
       optional(seq('->', field('return_type', $.type))),
-      optional(field('block', $._block)),
+    ),
+
+    function_name: $ => choice(
+      $.identifier,
+      $._operator
+    ),
+
+    _operator: _ => choice(
+      '+',
+      '+=',
+      '&&',
+      '=',
+      '&',
+      '|',
+      '^',
+      '--',
+      '/',
+      '/=',
+      '==',
+      '<',
+      '<=',
+      '++',
+      '>',
+      '>=',
+      '*',
+      '*=',
+      '!=',
+      '||',
+      '-',
+      '-='
     ),
 
     method_definition: $ => $._function_signature,

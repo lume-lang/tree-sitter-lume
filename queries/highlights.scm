@@ -34,8 +34,8 @@
 (constructor_field name:(identifier) @variable)
 
 ;; Functions
-(method_definition) @function
-(function_definition) @function
+(method_definition name:(_) @label) @function
+(function_definition name:(_) @label) @function
 
 (call_expression callee:(_) @function)
 (call_expression callee:(variable_reference (identifier) @function))
@@ -90,6 +90,7 @@
 [
   "as"
   "break"
+  "builtin"
   "continue"
   "else"
   "enum"
@@ -110,7 +111,6 @@
   "struct"
   "trait"
   "true"
-  "type"
   "use"
   "while"
 ] @keyword
