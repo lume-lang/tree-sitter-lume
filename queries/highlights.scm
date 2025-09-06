@@ -35,7 +35,8 @@
 ;; Expressions
 (construct_expression) @constructor
 (construct_expression name:(_) @type)
-(constructor_field name:(identifier) @variable)
+(named_constructor_field name:(identifier) @property)
+(implicit_constructor_field name:(identifier) @variable)
 (member_expression field:(identifier) @property)
 
 ;; Functions

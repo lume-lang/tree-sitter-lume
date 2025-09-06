@@ -412,12 +412,19 @@ module.exports = grammar({
       field('field', seq('{', sep(',', $.constructor_field), '}')),
     ),
 
-    constructor_field: $ => seq(
+    constructor_field: $ => choice(
+      $.named_constructor_field,
+      $.implicit_constructor_field
+    ),
+
+    named_constructor_field: $ => seq(
       field('name', $.identifier),
-      optional(seq(
-        ':',
-        field('value', $._expression)
-      ))
+      ':',
+      field('value', $._expression)
+    ),
+
+    implicit_constructor_field: $ => seq(
+      field('name', $.identifier)
     ),
 
     member_expression: $ => seq(
