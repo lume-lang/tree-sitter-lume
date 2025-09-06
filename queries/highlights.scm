@@ -36,13 +36,15 @@
 (construct_expression) @constructor
 (construct_expression name:(_) @type)
 (constructor_field name:(identifier) @variable)
+(member_expression field:(identifier) @property)
 
 ;; Functions
 (method_definition name:(_) @function)
 (function_definition name:(_) @function)
 
-(call_expression callee:(_) @function)
+(call_expression callee:(scoped_identifier name:(_) @function))
 (call_expression callee:(variable_reference (identifier) @function))
+(call_expression callee:(member_expression field:(identifier) @function))
 
 (parameter name:(identifier) @variable.parameter)
 

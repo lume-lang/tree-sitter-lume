@@ -34,7 +34,8 @@ module.exports = grammar({
   ],
 
   conflicts: $ => [
-    [$.path, $.variable_reference]
+    [$.path, $.variable_reference],
+    [$.call_expression, $.binary_expression],
   ],
 
   word: $ => $.identifier,
@@ -371,10 +372,7 @@ module.exports = grammar({
 
     call_expression: $ => prec(PREC.call, seq(
       field('callee', $._expression),
-      optional(seq(
-        '::',
-        field('type_arguments', $.type_args),
-      )),
+      optional(field('type_arguments', $.type_args)),
       field('arguments', $._arguments),
     )),
 
