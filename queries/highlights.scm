@@ -28,6 +28,11 @@
 (enum_case_properties) @property
 (property) @property
 
+;; Expressions
+(construct_expression) @constructor
+(construct_expression name:(_) @type)
+(constructor_field name:(identifier) @variable)
+
 ;; Functions
 (method_definition) @function
 (function_definition) @function

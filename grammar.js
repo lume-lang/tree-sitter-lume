@@ -21,6 +21,7 @@ const PREC = {
   inc_dec: 10,
   call: 11,
   member: 12,
+  construct: 13,
 };
 
 // @ts-ignore
@@ -30,6 +31,10 @@ module.exports = grammar({
   extras: $ => [
     /\s/,
     $.doc_comment,
+  ],
+
+  conflicts: $ => [
+    [$.path, $.variable_reference]
   ],
 
   word: $ => $.identifier,
@@ -211,7 +216,7 @@ module.exports = grammar({
      */
 
     type_args: $ => seq(
-      '<',
+      prec(15, '<'),
       sep(',', $.type),
       optional(','),
       '>',
@@ -309,6 +314,7 @@ module.exports = grammar({
       $.binary_expression,
       $.call_expression,
       $.cast_expression,
+      $.construct_expression,
       $.member_expression,
       $.if_conditional,
       $._nested_expression,
@@ -367,6 +373,19 @@ module.exports = grammar({
       ))));
     },
 
+    construct_expression: $ => seq(
+      field('name', $._named_type),
+      field('field', seq('{', sep(',', $.constructor_field), '}')),
+    ),
+
+    constructor_field: $ => seq(
+      field('name', $.identifier),
+      optional(seq(
+        ':',
+        field('value', $._expression)
+      ))
+    ),
+
     member_expression: $ => seq(
       field('value', $._expression),
       '.',
@@ -397,7 +416,7 @@ module.exports = grammar({
 
     _nested_expression: $ => seq('(', $._expression, ')'),
 
-    variable_reference: $ => prec(1, $.identifier),
+    variable_reference: $ => $.identifier,
 
     range_expression: $ => prec.left(PREC.range, seq(
       field('lower', $._expression),
