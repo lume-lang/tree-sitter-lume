@@ -253,8 +253,6 @@ module.exports = grammar({
       $.variable_declaration,
       $.break_statement,
       $.continue_statement,
-      $.if_conditional,
-      $.unless_conditional,
       $.infinite_loop,
       $.iterator_loop,
       $.predicate_loop,
@@ -277,34 +275,6 @@ module.exports = grammar({
     break_statement: _ => seq('break', ';'),
 
     continue_statement: _ => seq('continue', ';'),
-
-    if_conditional: $ => seq(
-      'if',
-      $._conditional_case,
-      optional($._else_if_conditional_cases),
-      optional(field('else', $._else_conditional_case))
-    ),
-
-    unless_conditional: $ => seq(
-      'unless',
-      $._conditional_case,
-      optional(field('else', $._else_conditional_case))
-    ),
-
-    _conditional_case: $ => seq(
-      field('condition', $._expression),
-      field('then', $._block),
-    ),
-
-    _else_if_conditional_cases: $ => repeat1(seq(
-      'else', 'if',
-      field('condition', $._expression),
-      field('else_if', $._block),
-    )),
-
-    _else_conditional_case: $ => seq(
-      'else', field('else', $._block),
-    ),
 
     infinite_loop: $ => seq('loop', $._block),
 
@@ -343,6 +313,7 @@ module.exports = grammar({
       $.comparison_expression,
       $.equality_expression,
       $.member_expression,
+      $.if_conditional,
       $._nested_expression,
       $.variable_reference,
       $.range_expression,
@@ -423,6 +394,28 @@ module.exports = grammar({
       field('value', $._expression),
       '.',
       field('field', $.identifier)
+    ),
+
+    if_conditional: $ => seq(
+      'if',
+      $._conditional_case,
+      optional($._else_if_conditional_cases),
+      optional(field('else', $._else_conditional_case))
+    ),
+
+    _conditional_case: $ => seq(
+      field('condition', $._expression),
+      field('then', $._block),
+    ),
+
+    _else_if_conditional_cases: $ => repeat1(seq(
+      'else', 'if',
+      field('condition', $._expression),
+      field('else_if', $._block),
+    )),
+
+    _else_conditional_case: $ => seq(
+      'else', field('else', $._block),
     ),
 
     _nested_expression: $ => seq('(', $._expression, ')'),
