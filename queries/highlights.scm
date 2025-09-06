@@ -25,7 +25,7 @@
 
 (struct_definition name:(identifier) @type)
 (enum_definition name:(identifier) @type)
-(type_alias name:(identifier) @type)
+(trait name:(identifier) @type)
 
 (enum_definition) @enum
 (enum_case_definition) @property
