@@ -32,6 +32,9 @@
 (enum_case_properties) @property
 (property name:(_) @property)
 
+;; Attributes
+(attribute name:(_) @attribute)
+
 ;; Expressions
 (construct_expression) @constructor
 (construct_expression name:(_) @type)
@@ -109,6 +112,7 @@
   "impl"
   "import"
   "in"
+  "internal"
   "let"
   "loop"
   "namespace"

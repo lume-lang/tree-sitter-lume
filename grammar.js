@@ -120,45 +120,31 @@ module.exports = grammar({
 
     _func_modifiers: _ => 'external',
 
+    attribute_argument: $ => seq(
+      field('name', $.identifier),
+      '=',
+      field('value', $._expression),
+    ),
+
+    _attribute_arguments: $ => seq('(', sep(',', $.attribute_argument), ')',),
+
+    attribute: $ => seq(
+      '!', '[',
+      field('name', $.identifier),
+      field('arguments', $._attribute_arguments),
+      ']',
+    ),
+
     _function_signature: $ => seq(
       optional($.doc_comment),
+      some($.attribute),
       optional($._visibility),
       'fn',
       optional(field('modifiers', $._func_modifiers)),
-      field('name', $.function_name),
+      field('name', $.identifier),
       optional(field('type_parameters', $.type_params)),
       field('parameters', $.parameters),
       optional(seq('->', field('return_type', $.type))),
-    ),
-
-    function_name: $ => choice(
-      $.identifier,
-      $._operator
-    ),
-
-    _operator: _ => choice(
-      '+',
-      '+=',
-      '&&',
-      '=',
-      '&',
-      '|',
-      '^',
-      '--',
-      '/',
-      '/=',
-      '==',
-      '<',
-      '<=',
-      '++',
-      '>',
-      '>=',
-      '*',
-      '*=',
-      '!=',
-      '||',
-      '-',
-      '-='
     ),
 
     method_definition: $ => seq(
@@ -184,6 +170,7 @@ module.exports = grammar({
 
     trait: $ => seq(
       optional($.doc_comment),
+      some($.attribute),
       optional($._visibility),
       'trait',
       field('name', $.identifier),
@@ -202,6 +189,7 @@ module.exports = grammar({
 
     enum_definition: $ => seq(
       optional($.doc_comment),
+      some($.attribute),
       optional($._visibility),
       'enum',
       field('name', $.identifier),
