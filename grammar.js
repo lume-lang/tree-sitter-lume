@@ -48,8 +48,8 @@ module.exports = grammar({
     ))),
 
     /**
-    * Top-level declaration statements.
-    */
+     * Top-level declaration statements.
+     */
 
     _declaration: $ => choice(
       $.import,
@@ -76,7 +76,10 @@ module.exports = grammar({
       field('path', $.path),
     ),
 
-    _visibility: _ => choice('pub', 'priv'),
+    _visibility: _ => choice(
+      seq('pub', optional(seq('(', 'internal', ')'))),
+      'priv',
+    ),
 
     struct_definition: $ => seq(
       optional($.doc_comment),
