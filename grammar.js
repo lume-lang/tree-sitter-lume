@@ -109,6 +109,7 @@ module.exports = grammar({
     parameter: $ => choice(
       $.self,
       seq(
+        optional('...'),
         field('name', $.identifier),
         ':',
         field('type', $.type),
