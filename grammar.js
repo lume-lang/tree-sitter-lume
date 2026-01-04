@@ -338,10 +338,12 @@ module.exports = grammar({
       $.construct_expression,
       $.member_expression,
       $.if_conditional,
+      $.is_expression,
       $._nested_expression,
       $.variable_reference,
       $.range_expression,
       $.self_reference,
+      $.switch_expression,
       $.unary_expression,
       $.postfix_expression,
       $._literal,
@@ -439,6 +441,12 @@ module.exports = grammar({
       'else', field('else', $._block),
     ),
 
+    is_expression: $ => seq(
+      field('operand', $._expression),
+      'is',
+      field('target', $.type)
+    ),
+
     _nested_expression: $ => seq('(', $._expression, ')'),
 
     variable_reference: $ => $.identifier,
@@ -451,6 +459,18 @@ module.exports = grammar({
     )),
 
     self_reference: $ => prec(1, $.self),
+
+    switch_expression: $ => seq(
+      'switch',
+      field('operand', $._expression),
+      field('then', in_block($._switch_arm)),
+    ),
+
+    _switch_arm: $ => seq(
+      field('pattern', $.pattern),
+      '=>',
+      field('branch', $._block),
+    ),
 
     unary_expression: $ => prec(PREC.unary,
       seq('!', $._expression)
@@ -515,6 +535,32 @@ module.exports = grammar({
     boolean_literal: _ => choice('false', 'true'),
 
     array_literal: $ => seq('[', sep(',', $._expression), ']'),
+
+    /**
+     * Patterns
+     */
+
+    pattern: $ => choice(
+      $._literal,
+      $.identifier,
+      $.variant_pattern,
+      $.wildcard_pattern,
+    ),
+
+    variant_pattern: $ => seq(
+      field('path', $.path),
+      'is',
+      field('fields', $._variant_subpatterns),
+    ),
+
+    _variant_subpatterns: $ => seq(
+      '(',
+      sep(',', $.pattern),
+      optional(','),
+      ')'
+    ),
+
+    wildcard_pattern: _ => '..',
   }
 });
 
@@ -562,6 +608,17 @@ function sep1(separator, rule) {
  */
 function sep(separator, rule) {
   return optional(sep1(separator, rule));
+}
+
+/**
+ * Creates a rule to match zero-or-more of the given rule.
+ *
+ * @param {Rule} rule
+ *
+ * @returns {ChoiceRule}
+ */
+function some(rule) {
+  return optional(repeat1(rule));
 }
 
 /**

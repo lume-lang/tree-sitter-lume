@@ -100,7 +100,6 @@
 [
   "as"
   "break"
-  "builtin"
   "continue"
   "else"
   "enum"
@@ -109,6 +108,7 @@
   "fn"
   "for"
   "if"
+  "is"
   "impl"
   "import"
   "in"
@@ -120,6 +120,7 @@
   "priv"
   "return"
   "struct"
+  "switch"
   "trait"
   "true"
   "use"
