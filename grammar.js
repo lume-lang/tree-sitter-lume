@@ -11,6 +11,7 @@ const PREC = {
   range: 0,
   assign: 1,
   cast: 2,
+  is: 3,
   boolean: 3,
   unary: 4,
   bitwise: 5,
@@ -31,11 +32,13 @@ module.exports = grammar({
   extras: $ => [
     /\s/,
     $.doc_comment,
+    $.attribute,
   ],
 
   conflicts: $ => [
     [$.path, $.variable_reference],
     [$.call_expression, $.binary_expression],
+    [$._named_type, $.variant_pattern],
   ],
 
   word: $ => $.identifier,
@@ -56,10 +59,14 @@ module.exports = grammar({
       $.namespace,
       $.struct_definition,
       $.function_definition,
-      $.impl,
-      $.trait,
-      $.trait_impl,
+      $.implementation,
+      $.trait_definition,
+      $.trait_implementation,
       $.enum_definition,
+
+      $.statement,
+      $.type,
+      $.pattern,
     ),
 
     import: $ => seq(
@@ -74,50 +81,6 @@ module.exports = grammar({
       'namespace',
       field('path', $.path),
     ),
-
-    _visibility: _ => choice(
-      seq('pub', optional(seq('(', 'internal', ')'))),
-      'priv',
-    ),
-
-    struct_definition: $ => seq(
-      optional($.doc_comment),
-      optional($._visibility),
-      'struct',
-      optional('builtin'),
-      field('name', $.identifier),
-      optional(field('type_parameters', $.type_params)),
-      field('properties', in_block($.property))
-    ),
-
-    property: $ => seq(
-      optional($.doc_comment),
-      optional($._visibility),
-      field('name', $.identifier),
-      ':',
-      field('type', $.type),
-      optional(seq(
-        '=',
-        field('default_value', $._expression),
-      )),
-      ';'
-    ),
-
-    parameters: $ => seq('(', sep(',', $.parameter), ')',),
-
-    parameter: $ => choice(
-      $.self,
-      seq(
-        optional('...'),
-        field('name', $.identifier),
-        ':',
-        field('type', $.type),
-      )
-    ),
-
-    _block: $ => in_block($.statement),
-
-    _func_modifiers: _ => 'external',
 
     attribute_argument: $ => seq(
       field('name', $.identifier),
@@ -134,94 +97,133 @@ module.exports = grammar({
       ']',
     ),
 
-    _function_signature: $ => seq(
-      optional($.doc_comment),
-      some($.attribute),
-      optional($._visibility),
-      'fn',
-      optional(field('modifiers', $._func_modifiers)),
-      field('name', $.identifier),
-      optional(field('type_parameters', $.type_params)),
-      field('parameters', $.parameters),
-      optional(seq('->', field('return_type', $.type))),
+    attribute_list: $ => zero_or_more($.attribute),
+
+    _visibility_modifier: _ => choice(
+      seq('pub', optional(seq('(', 'internal', ')'))),
+      'priv',
     ),
 
-    method_definition: $ => seq(
-      $._function_signature,
-      optional(field('block', $._block))
+    struct_definition: $ => seq(
+      optional($._visibility_modifier),
+      'struct',
+      field('name', $._type_identifier),
+      field('type_parameters', optional($.type_parameters)),
+      field('fields', in_block($.struct_field))
     ),
 
-    method_list: $ => in_block($.method_definition),
+    struct_field: $ => seq(
+      optional($._visibility_modifier),
+      field('name', $._field_identifier),
+      ':',
+      field('type', $.type),
+      optional(seq(
+        '=',
+        field('default_value', $._expression),
+      )),
+      ';'
+    ),
+
+    trait_definition: $ => seq(
+      optional($._visibility_modifier),
+      'trait',
+      field('name', $._type_identifier),
+      optional(field('type_parameters', $.type_parameters)),
+      field('block', $._method_list)
+    ),
+
+    enum_definition: $ => seq(
+      optional($._visibility_modifier),
+      'enum',
+      field('name', $._type_identifier),
+      field('type_parameters', optional($.type_parameters)),
+      field('variants', $.enum_variant_list)
+    ),
+
+    enum_variant_list: $ => braced(list(',', $.enum_variant_definition)),
+
+    enum_variant_definition: $ => seq(
+      field('name', $._type_identifier),
+      field('fields', optional(paren(sep(',', $.type)))),
+    ),
+
+    implementation: $ => seq(
+      'impl',
+      optional(field('type_parameters', $.type_parameters)),
+      field('type', $.type),
+      field('block', $._method_list)
+    ),
+
+    trait_implementation: $ => seq(
+      'use',
+      field('name', $.type),
+      ':',
+      field('target', $.type),
+      field('block', $._method_list)
+    ),
+
+    _method_list: $ => in_block($.method_definition),
 
     function_definition: $ => seq(
       $._function_signature,
       optional(field('block', $._block))
     ),
 
-    impl: $ => seq(
-      optional($.doc_comment),
-      optional($._visibility),
-      'impl',
-      optional(field('type_parameters', $.type_params)),
-      field('type', $.type),
-      field('block', $.method_list)
-    ),
+    _func_modifiers: _ => 'external',
 
-    trait: $ => seq(
-      optional($.doc_comment),
-      some($.attribute),
-      optional($._visibility),
-      'trait',
+    _function_signature: $ => seq(
+      optional($._visibility_modifier),
+      'fn',
+      optional(field('modifiers', $._func_modifiers)),
       field('name', $.identifier),
-      optional(field('type_parameters', $.type_params)),
-      field('block', $.method_list)
+      optional(field('type_parameters', $.type_parameters)),
+      field('parameters', $.parameters),
+      optional(seq('->', field('return_type', $.type))),
     ),
 
-    trait_impl: $ => seq(
-      optional($.doc_comment),
-      'use',
-      field('name', $.type),
-      ':',
-      field('target', $.type),
-      field('block', $.method_list)
+    parameters: $ => seq('(', sep(',', $.parameter), ')',),
+
+    parameter: $ => choice(
+      $.self,
+      seq(
+        optional('...'),
+        field('name', $.identifier),
+        ':',
+        field('type', $.type),
+      )
     ),
 
-    enum_definition: $ => seq(
-      optional($.doc_comment),
-      some($.attribute),
-      optional($._visibility),
-      'enum',
-      field('name', $.identifier),
-      field('case', curly(seq(
-        sep(',', $.enum_case_definition),
-        optional(',')
-      )))
-    ),
+    _block: $ => in_block($.statement),
 
-    enum_case_definition: $ => seq(
-      optional($.doc_comment),
-      field('name', $.identifier),
-      optional($.enum_case_properties)
-    ),
-
-    enum_case_properties: $ => paren(
-      field('properties', seq(
-        sep(',', $.type),
-        optional(',')
-      ))
+    method_definition: $ => seq(
+      $._function_signature,
+      optional(field('block', $._block))
     ),
 
     /**
      * Paths
      */
 
+    self: _ => 'self',
+
+    identifier: _ => /[a-zA-Z_][a-zA-Z0-9_]*/,
+
+    _type_identifier: $ => alias(/[A-Z][a-zA-Z0-9_]*/, $.type_identifier),
+
+    _field_identifier: $ => alias(/[a-z_][a-zA-Z0-9_]*/, $.field_identifier),
+
     path: $ => choice(
       $.self,
       $.identifier,
+      $.scoped_type_identifier,
       $.scoped_identifier,
     ),
 
-    identifier: _ => /[a-zA-Z_][a-zA-Z0-9_]*/,
+    scoped_type_identifier: $ => prec(2, seq(
+      field('root', $.type),
+      '::',
+      field('name', $._type_identifier),
+    )),
 
     scoped_identifier: $ => prec(1, seq(
       field('root', $.type),
@@ -229,20 +231,33 @@ module.exports = grammar({
       field('name', $.identifier),
     )),
 
-    self: _ => 'self',
-
     /**
-     * Generic types, parameters and arguments
+     * Types
      */
 
-    type_args: $ => seq(
+    self_type: _ => 'Self',
+
+    type: $ => choice(
+      $._named_type,
+      $.array_type,
+      $.self_type,
+    ),
+
+    _named_type: $ => prec.left(seq(
+      field('name', $.path),
+      optional(field('type_arguments', $.type_arguments))
+    )),
+
+    array_type: $ => seq('[', field('inner', $.type), ']'),
+
+    type_arguments: $ => seq(
       prec(15, '<'),
       sep(',', $.type),
       optional(','),
       '>',
     ),
 
-    type_params: $ => seq(
+    type_parameters: $ => seq(
       '<',
       sep(',', seq(
         field('name', $.identifier),
@@ -253,22 +268,6 @@ module.exports = grammar({
     ),
 
     _type_bounds: $ => seq(':', sep1('+', $.type)),
-
-    /**
-     * Types
-     */
-
-    type: $ => choice(
-      $._named_type,
-      $.array_type,
-    ),
-
-    _named_type: $ => prec.left(seq(
-      field('name', $.path),
-      optional(field('type_arguments', $.type_args))
-    )),
-
-    array_type: $ => seq('[', field('inner', $.type), ']'),
 
     /**
      * Statements
@@ -331,6 +330,7 @@ module.exports = grammar({
      */
 
     _expression: $ => choice(
+      $.is_expression,
       $.assignment_expression,
       $.binary_expression,
       $.call_expression,
@@ -338,15 +338,14 @@ module.exports = grammar({
       $.construct_expression,
       $.member_expression,
       $.if_conditional,
-      $.is_expression,
       $._nested_expression,
       $.variable_reference,
       $.range_expression,
-      $.self_reference,
       $.switch_expression,
       $.unary_expression,
       $.postfix_expression,
       $._literal,
+      prec(1, $.self),
       prec(1, $.scoped_identifier),
     ),
 
@@ -358,7 +357,7 @@ module.exports = grammar({
 
     call_expression: $ => prec(PREC.call, seq(
       field('callee', $._expression),
-      optional(field('type_arguments', $.type_args)),
+      optional(field('type_arguments', $.type_arguments)),
       field('arguments', $._arguments),
     )),
 
@@ -441,11 +440,11 @@ module.exports = grammar({
       'else', field('else', $._block),
     ),
 
-    is_expression: $ => seq(
+    is_expression: $ => prec.left(PREC.is, seq(
       field('operand', $._expression),
       'is',
-      field('target', $.type)
-    ),
+      field('pattern', $.pattern)
+    )),
 
     _nested_expression: $ => seq('(', $._expression, ')'),
 
@@ -458,18 +457,21 @@ module.exports = grammar({
       field('upper', $._expression),
     )),
 
-    self_reference: $ => prec(1, $.self),
+    _scope_expression: $ => in_block($.statement),
 
     switch_expression: $ => seq(
       'switch',
       field('operand', $._expression),
-      field('then', in_block($._switch_arm)),
+      field('then', braced(list(',', $._switch_arm))),
     ),
 
     _switch_arm: $ => seq(
       field('pattern', $.pattern),
       '=>',
-      field('branch', $._block),
+      field('branch', choice(
+        $._expression,
+        $._block,
+      )),
     ),
 
     unary_expression: $ => prec(PREC.unary,
@@ -540,25 +542,19 @@ module.exports = grammar({
      * Patterns
      */
 
-    pattern: $ => choice(
+    pattern: $ => prec(1, choice(
       $._literal,
       $.identifier,
       $.variant_pattern,
       $.wildcard_pattern,
-    ),
+    )),
 
-    variant_pattern: $ => seq(
+    variant_pattern: $ => prec.left(seq(
       field('path', $.path),
-      'is',
-      field('fields', $._variant_subpatterns),
-    ),
+      optional(field('fields', $._variant_subpatterns)),
+    )),
 
-    _variant_subpatterns: $ => seq(
-      '(',
-      sep(',', $.pattern),
-      optional(','),
-      ')'
-    ),
+    _variant_subpatterns: $ => paren(sep(',', $.pattern)),
 
     wildcard_pattern: _ => '..',
   }
@@ -576,13 +572,13 @@ function paren(rule) {
 }
 
 /**
- * Creates a rule to match the given rule, surrounded by curly braces.
+ * Creates a rule to match the given rule, surrounded by braced braces.
  *
  * @param {Rule} rule
  *
  * @returns {SeqRule}
  */
-function curly(rule) {
+function braced(rule) {
   return seq('{', rule, '}');
 }
 
@@ -611,13 +607,27 @@ function sep(separator, rule) {
 }
 
 /**
+ * Creates a rule to match zero-or-more of the rules separated by the given separator.
+ *
+ * An optional separator is allowed at the end.
+ *
+ * @param {String} separator
+ * @param {Rule} rule
+ *
+ * @returns {ChoiceRule}
+ */
+function list(separator, rule) {
+  return optional(seq(sep1(separator, rule), optional(separator)));
+}
+
+/**
  * Creates a rule to match zero-or-more of the given rule.
  *
  * @param {Rule} rule
  *
  * @returns {ChoiceRule}
  */
-function some(rule) {
+function zero_or_more(rule) {
   return optional(repeat1(rule));
 }
 
@@ -629,5 +639,5 @@ function some(rule) {
  * @returns {SeqRule}
  */
 function in_block(rule) {
-  return seq('{', optional(repeat1(rule)), '}');
+  return braced(zero_or_more(rule));
 }
