@@ -60,7 +60,6 @@ module.exports = grammar({
       $.trait,
       $.trait_impl,
       $.enum_definition,
-      $.type_alias,
     ),
 
     import: $ => seq(
@@ -210,13 +209,6 @@ module.exports = grammar({
         sep(',', $.type),
         optional(',')
       ))
-    ),
-
-    type_alias: $ => seq(
-      'type',
-      field('name', $.identifier),
-      '=',
-      field('definition', $.type)
     ),
 
     /**
