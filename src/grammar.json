@@ -908,7 +908,7 @@
         },
         {
           "type": "STRING",
-          "value": "in"
+          "value": ":"
         },
         {
           "type": "FIELD",

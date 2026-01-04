@@ -191,7 +191,7 @@ module.exports = grammar({
       optional($.doc_comment),
       'use',
       field('name', $.type),
-      'in',
+      ':',
       field('target', $.type),
       field('block', $.method_list)
     ),
