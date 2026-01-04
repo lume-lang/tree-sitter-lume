@@ -121,7 +121,7 @@ fn add<T>(x: T, y: T) -> T {
         (identifier)))
     block: (statement
       (return_statement
-        (arithmetic_expression
+        (binary_expression
           left: (variable_reference
             (identifier))
           right: (variable_reference
@@ -130,7 +130,7 @@ fn add<T>(x: T, y: T) -> T {
       (return_statement)))
   (function_definition
     name: (identifier)
-    type_parameters: (type_params
+    type_parameters: (type_parameters
       name: (identifier))
     parameters: (parameters
       (parameter
@@ -148,7 +148,7 @@ fn add<T>(x: T, y: T) -> T {
         (identifier)))
     block: (statement
       (return_statement
-        (arithmetic_expression
+        (binary_expression
           left: (variable_reference
             (identifier))
           right: (variable_reference
@@ -174,7 +174,7 @@ fn external main() -> Int32 {}
     parameters: (parameters))
   (function_definition
     name: (identifier)
-    type_parameters: (type_params
+    type_parameters: (type_parameters
       name: (identifier))
     parameters: (parameters))
   (function_definition
@@ -192,8 +192,6 @@ struct Foo {}
 
 struct Foo<T> {}
 
-struct builtin Foo {}
-
 struct Foo {
     bar: Int32;
 }
@@ -210,31 +208,29 @@ struct Foo {
 
 (source_file
   (struct_definition
-    (identifier))
+    (type_identifier))
   (struct_definition
-    (identifier)
-    (type_params
+    (type_identifier)
+    (type_parameters
       (identifier)))
   (struct_definition
-    (identifier))
-  (struct_definition
-    (identifier)
-    (property
-      (identifier)
+    (type_identifier)
+    (struct_field
+      (field_identifier)
       (type
         (path
           (identifier)))))
   (struct_definition
-    (identifier)
-    (property
-      (identifier)
+    (type_identifier)
+    (struct_field
+      (field_identifier)
       (type
         (path
           (identifier)))))
   (struct_definition
-    (identifier)
-    (property
-      (identifier)
+    (type_identifier)
+    (struct_field
+      (field_identifier)
       (type
         (path
           (identifier)))
@@ -257,39 +253,35 @@ impl<T> Generic<T> {}
 ----------
 
 (source_file
-  (impl
+  (implementation
+    (type
+      (path
+        (identifier))))
+  (implementation
     (type
       (path
         (identifier)))
-    (method_list))
-  (impl
-    (type
-      (path
-        (identifier)))
-    (method_list
-      (method_definition
-        (identifier)
-        (parameters))))
-  (impl
+    (method_definition
+      (identifier)
+      (parameters)))
+  (implementation
     (type
       (path
         (identifier))
-      (type_args
+      (type_arguments
         (type
           (path
-            (identifier)))))
-    (method_list))
-  (impl
-    (type_params
+            (identifier))))))
+  (implementation
+    (type_parameters
       (identifier))
         (type
           (path
             (identifier))
-          (type_args
+          (type_arguments
             (type
               (path
-                (identifier)))))
-    (method_list)))
+                (identifier)))))))
 
 ==========
 Trait definitions
@@ -309,91 +301,83 @@ trait Generic<T> {}
 
 ----------
 (source_file
-  (trait
-    (identifier)
-    (method_list))
-  (trait
-    (identifier)
-    (method_list
-      (method_definition
-        (identifier)
-        (parameters))))
-  (trait
-    (identifier)
-    (method_list
-      (method_definition
-        (identifier)
-        (parameters))))
-  (trait
-    (identifier)
-    (type_params
-      (identifier))
-    (method_list)))
+  (trait_definition
+    (type_identifier))
+  (trait_definition
+    (type_identifier)
+    (method_definition
+      (identifier)
+      (parameters)))
+  (trait_definition
+    (type_identifier)
+    (method_definition
+      (identifier)
+      (parameters)))
+  (trait_definition
+    (type_identifier)
+    (type_parameters
+      (identifier))))
 
 ==========
 Trait implementations
 ==========
 
-use Add in Int32 {}
+use Add: Int32 {}
 
-use Add in Int32 {
+use Add: Int32 {
     pub fn add() -> Int32 { }
 }
 
-use Add in Int32 {
+use Add: Int32 {
     fn add() { }
 }
 
-use Generic<T> in Int32 {}
+use Generic<T>: Int32 {}
 
 ----------
 
 (source_file
-  (trait_impl
+  (trait_implementation
+    name: (type
+      name: (path
+        (identifier)))
+    target: (type
+      name: (path
+        (identifier))))
+  (trait_implementation
     name: (type
       name: (path
         (identifier)))
     target: (type
       name: (path
         (identifier)))
-    block: (method_list))
-  (trait_impl
+    block: (method_definition
+      name: (identifier)
+      parameters: (parameters)
+      return_type: (type
+      name: (path
+        (identifier)))))
+  (trait_implementation
     name: (type
       name: (path
         (identifier)))
     target: (type
       name: (path
         (identifier)))
-    block: (method_list
-      (method_definition
-        name: (identifier)
-        parameters: (parameters)
-        return_type: (type
-          name: (path
-            (identifier))))))
-  (trait_impl
-    name: (type
-      name: (path
-        (identifier)))
-    target: (type
-      name: (path
-        (identifier)))
-    block: (method_list
-      (method_definition
-        name: (identifier)
-        parameters: (parameters))))
-  (trait_impl
+    block: (method_definition
+      name: (identifier)
+      parameters: (parameters)))
+  (trait_implementation
     name: (type
       name: (path
         (identifier))
-      type_arguments: (type_args
+      type_arguments: (type_arguments
         (type
           name: (path
             (identifier)))))
     target: (type
       name: (path
-        (identifier)))
-    block: (method_list)))
+        (identifier)))))
 
 ==========
 Enum definitions
@@ -407,57 +391,57 @@ enum IpKind {
 }
 
 enum Token {
-    str(String),
-    int(Int32),
+    Str(String),
+    Int(Int32),
 }
 
 enum Token {
-    str(String, Location),
-    int(Int32, Location),
+    Str(String, Location),
+    Int(Int32, Location),
 }
 
 ----------
 
 (source_file
   (enum_definition
-    name: (identifier))
+    name: (type_identifier)
+    variants: (enum_variant_list))
   (enum_definition
-    name: (identifier)
-    case: (enum_case_definition
-      name: (identifier))
-    case: (enum_case_definition
-      name: (identifier)))
+    name: (type_identifier)
+    variants: (enum_variant_list
+      (enum_variant_definition
+        name: (type_identifier))
+      (enum_variant_definition
+        name: (type_identifier))))
   (enum_definition
-    name: (identifier)
-    case: (enum_case_definition
-      name: (identifier)
-      (enum_case_properties
-        properties: (type
+    name: (type_identifier)
+    variants: (enum_variant_list
+      (enum_variant_definition
+        name: (type_identifier)
+        fields: (type
           name: (path
-            (identifier)))))
-    case: (enum_case_definition
-      name: (identifier)
-      (enum_case_properties
-        properties: (type
+            (identifier))))
+      (enum_variant_definition
+        name: (type_identifier)
+        fields: (type
           name: (path
             (identifier))))))
-   (enum_definition
-     name: (identifier)
-     case: (enum_case_definition
-       name: (identifier)
-       (enum_case_properties
-         properties: (type
-           name: (path
-             (identifier)))
-         properties: (type
-           name: (path
-             (identifier)))))
-     case: (enum_case_definition
-       name: (identifier)
-       (enum_case_properties
-         properties: (type
-           name: (path
-             (identifier)))
-         properties: (type
-           name: (path
-             (identifier)))))))
+  (enum_definition
+    name: (type_identifier)
+    variants: (enum_variant_list
+      (enum_variant_definition
+        name: (type_identifier)
+        fields: (type
+          name: (path
+            (identifier)))
+        fields: (type
+          name: (path
+            (identifier))))
+      (enum_variant_definition
+        name: (type_identifier)
+        fields: (type
+          name: (path
+            (identifier)))
+        fields: (type
+          name: (path
+            (identifier)))))))
