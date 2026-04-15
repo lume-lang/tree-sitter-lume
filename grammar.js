@@ -23,6 +23,7 @@ const PREC = {
   call: 11,
   member: 12,
   construct: 13,
+  unsafe: 14,
 };
 
 // @ts-ignore
@@ -169,7 +170,7 @@ module.exports = grammar({
       optional(field('block', $._block))
     ),
 
-    _func_modifiers: _ => 'external',
+    _func_modifiers: _ => repeat1(choice('unsafe', 'external')),
 
     _function_signature: $ => seq(
       optional($._visibility_modifier),
@@ -280,9 +281,10 @@ module.exports = grammar({
       $.infinite_loop,
       $.iterator_loop,
       prec(1, $.if_conditional),
+      prec(1, $.switch_expression),
       $.predicate_loop,
       $.return_statement,
-      $._expression_statement
+      prec.right(1, seq($._expression, optional(';'))),
     ),
 
     variable_declaration: $ => seq(
@@ -317,8 +319,6 @@ module.exports = grammar({
       field('block', $._block),
     ),
 
-    _expression_statement: $ => seq($._expression, ';'),
-
     return_statement: $ => choice(
       prec.left(seq('return', $._expression)),
       prec(-1, 'return'),
@@ -343,6 +343,7 @@ module.exports = grammar({
       $.range_expression,
       $.switch_expression,
       $.unary_expression,
+      $.unsafe_expression,
       $.postfix_expression,
       $._literal,
       prec(1, $.self),
@@ -477,6 +478,8 @@ module.exports = grammar({
     unary_expression: $ => prec(PREC.unary,
       seq('!', $._expression)
     ),
+
+    unsafe_expression: $ => prec(PREC.unsafe, seq('unsafe', $._scope_expression)),
 
     postfix_expression: $ => prec(PREC.inc_dec, seq(
       field('value', $._expression),
