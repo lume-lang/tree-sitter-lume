@@ -124,3 +124,5 @@
   "use"
   "while"
 ] @keyword
+
+(attribute) @attribute

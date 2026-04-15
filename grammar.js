@@ -33,7 +33,6 @@ module.exports = grammar({
   extras: $ => [
     /\s/,
     $.doc_comment,
-    $.attribute,
   ],
 
   conflicts: $ => [
@@ -91,12 +90,12 @@ module.exports = grammar({
 
     _attribute_arguments: $ => seq('(', sep(',', $.attribute_argument), ')',),
 
-    attribute: $ => seq(
+    attribute: $ => prec(1, seq(
       '!', '[',
       field('name', $.identifier),
-      field('arguments', $._attribute_arguments),
+      optional(field('arguments', $._attribute_arguments)),
       ']',
-    ),
+    )),
 
     attribute_list: $ => zero_or_more($.attribute),
 
@@ -106,6 +105,7 @@ module.exports = grammar({
     ),
 
     struct_definition: $ => seq(
+      zero_or_more($.attribute),
       optional($._visibility_modifier),
       'struct',
       field('name', $._type_identifier),
@@ -114,6 +114,7 @@ module.exports = grammar({
     ),
 
     struct_field: $ => seq(
+      zero_or_more($.attribute),
       optional($._visibility_modifier),
       field('name', $._field_identifier),
       ':',
@@ -126,6 +127,7 @@ module.exports = grammar({
     ),
 
     trait_definition: $ => seq(
+      zero_or_more($.attribute),
       optional($._visibility_modifier),
       'trait',
       field('name', $._type_identifier),
@@ -134,6 +136,7 @@ module.exports = grammar({
     ),
 
     enum_definition: $ => seq(
+      zero_or_more($.attribute),
       optional($._visibility_modifier),
       'enum',
       field('name', $._type_identifier),
@@ -144,11 +147,13 @@ module.exports = grammar({
     enum_variant_list: $ => braced(list(',', $.enum_variant_definition)),
 
     enum_variant_definition: $ => seq(
+      zero_or_more($.attribute),
       field('name', $._type_identifier),
       field('fields', optional(paren(sep(',', $.type)))),
     ),
 
     implementation: $ => seq(
+      zero_or_more($.attribute),
       'impl',
       optional(field('type_parameters', $.type_parameters)),
       field('type', $.type),
@@ -166,6 +171,7 @@ module.exports = grammar({
     _method_list: $ => in_block($.method_definition),
 
     function_definition: $ => seq(
+      zero_or_more($.attribute),
       $._function_signature,
       optional(field('block', $._block))
     ),
